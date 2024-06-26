@@ -1,20 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
+import Header from './src/components/Header';
+import AddTask, { MyItem } from './src/components/AddTask';
+import TaskItem from './src/components/TaskItem';
+import React, { useState } from 'react';
 
-export default function App() {
+const App = () => {
+  const [taskList, setTaskList] = useState<MyItem[]>([]);
+
+  const toggleTaskStatus = (index: number) => {
+    const newTaskList = taskList.map((task, idx) => {
+      if (idx === index) {
+        return { ...task, description: task.description === 'Due' ? 'Done' : 'Due' };
+      }
+      return task;
+    });
+    setTaskList(newTaskList);
+  };
+
+  const deleteTask = (index: number) => {
+    const newTaskList = taskList.filter((_, idx) => idx !== index);
+    setTaskList(newTaskList);
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Header title='To Do List' />
+      <AddTask setTaskList={setTaskList} taskList={taskList} />
+      <FlatList
+        data={taskList}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <TaskItem
+            item={item.item}
+            description={item.description}
+            onToggleStatus={() => toggleTaskStatus(index)}
+            onDelete={() => deleteTask(index)}
+          />
+        )}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 50,
   },
 });
+
+export default App;
