@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@firebase/firestore": "^4.6.3",
     "expo": "~51.0.14",
     "expo-status-bar": "~1.12.1",
     "firebase": "^10.12.2",

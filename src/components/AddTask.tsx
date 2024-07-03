@@ -1,34 +1,23 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
-export interface MyItem {
-  item: string;
-  description: string;
-}
+import React, { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 interface Props {
-  setTaskList: React.Dispatch<React.SetStateAction<MyItem[]>>;
-  taskList: MyItem[];
+  addItem: (item: string, description: string) => Promise<void>;
 }
 
-const AddTask: React.FC<Props> = ({ taskList, setTaskList }) => {
-  const [item, setItem] = useState('');
-  const [description, setDescription] = useState('Due');
+const AddTask: React.FC<Props> = ({ addItem }) => {
+  const [item, setItem] = useState("");
+  const [description, setDescription] = useState("Due");
 
-  const addItem = () => {
+  const handleAddItem = async () => {
     if (!item) {
-      Alert.alert('No Item!', 'Please enter an item');
-    } else {
-      setTaskList([
-        ...taskList,
-        {
-          item,
-          description: description || 'Due',
-        },
-      ]);
-      setItem('');
-      setDescription('Due');
+      Alert.alert("No Item!", "Please enter an item");
+      return;
     }
+
+    await addItem(item, description);
+    setItem("");
+    setDescription("Due");
   };
 
   return (
@@ -37,17 +26,15 @@ const AddTask: React.FC<Props> = ({ taskList, setTaskList }) => {
       <View>
         <TextInput
           style={styles.textInput}
-          placeholder='Enter Task'
+          placeholder="Enter Task"
           value={item}
-          onChangeText={text => setItem(text)}
+          onChangeText={(text) => setItem(text)}
         />
-        <TextInput
-          style={styles.textInput}
-          placeholder='Enter Description'
-          value={description}
-          onChangeText={text => setDescription(text)}
-        />
-        <TouchableOpacity style={[styles.addItemButton, { opacity: item ? 1 : 0.5 }]} onPress={addItem} disabled={!item}>
+        <TouchableOpacity
+          style={[styles.addItemButton, { opacity: item ? 1 : 0.5 }]}
+          onPress={handleAddItem}
+          disabled={!item}
+        >
           <Text style={styles.buttonText}>Add Item</Text>
         </TouchableOpacity>
       </View>
@@ -58,33 +45,35 @@ const AddTask: React.FC<Props> = ({ taskList, setTaskList }) => {
 const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
-    color: 'blue',
+    color: "blue",
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   textInput: {
     padding: 10,
-    borderColor: 'orange',
-    backgroundColor: '#FCAE1E',
+    borderColor: "orange",
+    backgroundColor: "#FCAE1E",
     borderWidth: 2,
     borderRadius: 5,
     marginTop: 10,
     fontSize: 18,
   },
   addItemButton: {
-    backgroundColor: 'orange',
+    backgroundColor: "orange",
     marginTop: 10,
     borderRadius: 5,
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'black',
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "black",
     borderWidth: 2,
+    marginBottom: 40,
   },
   buttonText: {
-    color: 'black',
+    color: "black",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
